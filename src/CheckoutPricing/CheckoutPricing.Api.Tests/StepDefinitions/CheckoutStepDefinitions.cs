@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Mvc.Testing;
 using TechTalk.SpecFlow;
 
 namespace CheckoutPricing.Api.Tests.StepDefinitions
@@ -6,6 +7,14 @@ namespace CheckoutPricing.Api.Tests.StepDefinitions
     [Binding]
     public class CheckoutStepDefinitions
     {
+        private readonly HttpClient _client;
+
+        public CheckoutStepDefinitions()
+        {
+            var factory = new WebApplicationFactory<Program>();
+            _client = factory.CreateClient();
+        }
+
         [Given(@"the following pricing rules:")]
         public void GivenTheFollowingPricingRules(Table table)
         {
