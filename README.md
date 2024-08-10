@@ -30,5 +30,23 @@ This project is structured with two main components:
 
 1. Navigate to the `CheckoutPricing.Api` project.
 2. Run the API using your IDE or the command line:
-   ```bash
-   dotnet run --project CheckoutPricing.Api.csproj
+
+```bash
+dotnet run --project CheckoutPricing.Api.csproj
+```
+
+### Running the Tests
+Navigate to the CheckoutPricing.Api.Tests project.
+Execute the tests using the following command:
+
+```bash
+Copy code
+dotnet test
+```
+
+This will run the SpecFlow tests, which will interact with the API through TestServer to validate the checkout functionality.
+
+## 🎯 Features
+- Simple Pricing Rules: Set unit prices for each item.
+- Special Offers: Handle special offers like bulk discounts.
+- Integration Testing: SpecFlow tests that validate the API's behavior through realistic scenarios.
