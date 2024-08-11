@@ -7,11 +7,11 @@ namespace CheckoutPricing.Api.Controllers
     [Route("[controller]")]
     public class CheckoutController : ControllerBase
     {
-        private static readonly List<PricingRule> PricingRules = new List<PricingRule>();
-        private static readonly Dictionary<string, int> Items = new Dictionary<string, int>();
+        private static readonly List<PricingRule> PricingRules = [];
+        private static readonly Dictionary<string, int> Items = new();
 
 
-        [HttpPost("pricingrules")]
+        [HttpPost("pricing/rules")]
         public IActionResult SetPricingRules([FromBody] List<PricingRule> rules)
         {
             PricingRules.Clear();
@@ -23,10 +23,7 @@ namespace CheckoutPricing.Api.Controllers
         [HttpPost("scan/{item}")]
         public IActionResult ScanItem(string item)
         {
-            if (!Items.ContainsKey(item))
-            {
-                Items[item] = 0;
-            }
+            Items.TryAdd(item, 0);
             Items[item]++;
             return Ok();
         }
@@ -39,18 +36,17 @@ namespace CheckoutPricing.Api.Controllers
             foreach (var item in Items)
             {
                 var rule = PricingRules.Find(r => r.Item == item.Key);
-                if (rule != null)
+                if (rule == null) continue;
+                if (rule.SpecialQuantity.HasValue && item.Value >= rule.SpecialQuantity)
                 {
-                    if (rule.SpecialQuantity.HasValue && item.Value >= rule.SpecialQuantity)
-                    {
-                        int specialBundleCount = item.Value / rule.SpecialQuantity.Value;
-                        int remainingItems = item.Value % rule.SpecialQuantity.Value;
+                    var specialBundleCount = item.Value / rule.SpecialQuantity.Value;
+                    var remainingItems = item.Value % rule.SpecialQuantity.Value;
+                    if (rule.SpecialPrice != null)
                         total += specialBundleCount * rule.SpecialPrice.Value + remainingItems * rule.UnitPrice;
-                    }
-                    else
-                    {
-                        total += item.Value * rule.UnitPrice;
-                    }
+                }
+                else
+                {
+                    total += item.Value * rule.UnitPrice;
                 }
             }
 

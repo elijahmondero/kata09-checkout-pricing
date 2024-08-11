@@ -36,7 +36,7 @@ namespace CheckoutPricing.Api.Tests.StepDefinitions
             }
 
             var content = new StringContent(JsonConvert.SerializeObject(pricingRules), Encoding.UTF8, "application/json");
-            _response = await _client.PostAsync("/checkout/pricingrules", content);
+            _response = await _client.PostAsync("/checkout/pricing/rules", content);
             _response.EnsureSuccessStatusCode();
         }
 
