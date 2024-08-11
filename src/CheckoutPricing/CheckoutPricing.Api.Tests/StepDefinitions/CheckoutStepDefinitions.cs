@@ -1,5 +1,8 @@
 using System;
+using CheckoutPricing.Api.Models;
+using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 using TechTalk.SpecFlow;
 
 namespace CheckoutPricing.Api.Tests.StepDefinitions
@@ -8,6 +11,7 @@ namespace CheckoutPricing.Api.Tests.StepDefinitions
     public class CheckoutStepDefinitions
     {
         private readonly HttpClient _client;
+        private HttpResponseMessage _response;
 
         public CheckoutStepDefinitions()
         {
@@ -16,21 +20,46 @@ namespace CheckoutPricing.Api.Tests.StepDefinitions
         }
 
         [Given(@"the following pricing rules:")]
-        public void GivenTheFollowingPricingRules(Table table)
+        public async Task GivenTheFollowingPricingRules(Table table)
         {
-            throw new PendingStepException();
+            var pricingRules = new List<PricingRule>();
+
+            foreach (var row in table.Rows)
+            {
+                pricingRules.Add(new PricingRule
+                {
+                    Item = row["Item"],
+                    UnitPrice = decimal.Parse(row["UnitPrice"]),
+                    SpecialQuantity = row.ContainsKey("SpecialQuantity") && int.TryParse(row["SpecialQuantity"], out var sq) ? sq : (int?)null,
+                    SpecialPrice = row.ContainsKey("SpecialPrice") && decimal.TryParse(row["SpecialPrice"], out var sp) ? sp : (decimal?)null
+                });
+            }
+
+            var content = new StringContent(JsonConvert.SerializeObject(pricingRules), Encoding.UTF8, "application/json");
+            _response = await _client.PostAsync("/checkout/pricingrules", content);
+            _response.EnsureSuccessStatusCode();
         }
 
         [When(@"I scan the following items:")]
-        public void WhenIScanTheFollowingItems(Table table)
+        public async Task WhenIScanTheFollowingItems(Table table)
         {
-            throw new PendingStepException();
+            foreach (var row in table.Rows)
+            {
+                _response = await _client.PostAsync($"/checkout/scan/{row["Item"]}", null);
+                _response.EnsureSuccessStatusCode();
+            }
         }
 
         [Then(@"the total price should be (.*)")]
-        public void ThenTheTotalPriceShouldBe(int p0)
+        public async Task ThenTheTotalPriceShouldBe(int expectedTotal)
         {
-            throw new PendingStepException();
+            _response = await _client.GetAsync("/checkout/total");
+            _response.EnsureSuccessStatusCode();
+
+            var responseContent = await _response.Content.ReadAsStringAsync();
+            var actualTotal = decimal.Parse(responseContent);
+
+            Assert.Equal(expectedTotal, actualTotal);
         }
     }
 }
