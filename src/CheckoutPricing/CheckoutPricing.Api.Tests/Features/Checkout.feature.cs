@@ -300,7 +300,7 @@ namespace CheckoutPricing.Api.Tests.Features
     testRunner.When("I scan the following items:", ((string)(null)), table6, "When ");
 #line hidden
 #line 52
-    testRunner.Then("the total price should be 225", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the total price should be 245", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

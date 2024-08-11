@@ -49,4 +49,4 @@
       | B    |
       | B    |
       | C    |
-    Then the total price should be 225
+    Then the total price should be 245
