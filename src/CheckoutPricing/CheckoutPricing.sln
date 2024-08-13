@@ -5,7 +5,12 @@ VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckoutPricing.Api", "CheckoutPricing.Api\CheckoutPricing.Api.csproj", "{2F3020E6-9240-46C8-8050-A6B6CE703003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckoutPricing.Api.Tests", "CheckoutPricing.Api.Tests\CheckoutPricing.Api.Tests.csproj", "{90566207-2A1F-4994-9748-8880E10F5283}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckoutPricing.Api.Tests", "CheckoutPricing.Api.Tests\CheckoutPricing.Api.Tests.csproj", "{90566207-2A1F-4994-9748-8880E10F5283}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1E367346-16AA-4AD4-AAFF-114F13EB3CE9}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

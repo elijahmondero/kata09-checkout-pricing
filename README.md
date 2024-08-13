@@ -46,6 +46,22 @@ dotnet test
 
 This will run the SpecFlow tests, which will interact with the API through TestServer to validate the checkout functionality.
 
+Running the API with Docker
+
+1. Build the Docker image:
+
+```bash
+docker build -t kata09-checkout-pricing .
+```
+
+2. Run the Docker container:
+
+```bash
+docker run -d -p 5062:8080 --name checkout-pricing kata09-checkout-pricing
+```
+
+This will build and run the API in a Docker container, exposing it on port 80.
+
 ## 🎯 Features
 - Simple Pricing Rules: Set unit prices for each item.
 - Special Offers: Handle special offers like bulk discounts.
