@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Xunit.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
+using TechTalk.SpecFlow;
 
 namespace CheckoutPricing.Api.Tests.StepDefinitions;
 
@@ -17,7 +19,9 @@ public class ProductStepDefinitions
 {
     private readonly HttpClient _client;
     private HttpResponseMessage? _response;
-
+    private readonly ITestOutputHelper _output;
+    private readonly string _connectionString;
+    
     public ProductStepDefinitions(MySqlContainerFixture fixture, ITestOutputHelper output)
     {
         var factory = new WebApplicationFactory<Program>()
@@ -39,19 +43,16 @@ public class ProductStepDefinitions
                 });
             });
         _client = factory.CreateClient();
+        _output = output;
+        _connectionString = fixture.MySqlContainer.GetConnectionString();
     }
 
-
-    [BeforeFeature]
-    public static async Task Before(MySqlContainerFixture fixture)
+    private void PurgeDatabase()
     {
-        await fixture.InitializeAsync();
-    }
-
-    [AfterFeature]
-    public static async Task After(MySqlContainerFixture fixture)
-    {
-        await fixture.DisposeAsync();
+        using var connection = new MySqlConnection(_connectionString);
+        connection.Open();
+        using var command = new MySqlCommand("DELETE FROM Products", connection);
+        command.ExecuteNonQuery();
     }
 
     [Given(@"I add the following product:")]
@@ -59,10 +60,12 @@ public class ProductStepDefinitions
     {
         foreach (var row in table.Rows)
         {
+            var originalId = row["Id"];
+            var originalName = row["Name"];
             var product = new Product
             {
-                Id = row["Id"],
-                Name = row["Name"],
+                Id = originalId,
+                Name = originalName,
                 UnitPrice = decimal.Parse(row["UnitPrice"])
             };
 
@@ -125,5 +128,34 @@ public class ProductStepDefinitions
         {
             throw new Exception("Product still exists.");
         }
+    }
+
+    [When(@"I request page (.*) with page size (.*)")]
+    public async Task WhenIRequestPageWithPageSize(int page, int pageSize)
+    {
+        _response = await _client.GetAsync($"/Product?page={page}&pageSize={pageSize}");
+        _response.EnsureSuccessStatusCode();
+    }
+
+    [Then(@"the response should contain the following products:")]
+    public async Task ThenTheResponseShouldContainTheFollowingProducts(Table table)
+    {
+        var responseContent = await _response!.Content.ReadAsStringAsync();
+        var products = JsonConvert.DeserializeObject<List<Product>>(responseContent);
+        _output.WriteLine(responseContent);
+        foreach (var row in table.Rows)
+        {
+            var product = products!.FirstOrDefault(p => p.Id == row["Id"]);
+            Assert.NotNull(product);
+            Assert.Equal(row["Name"], product!.Name);
+            Assert.Equal(decimal.Parse(row["UnitPrice"]), product.UnitPrice);
+        }
+    }
+
+    [When(@"I search for products with name containing ""(.*)""")]
+    public async Task WhenISearchForProductsWithNameContaining(string search)
+    {
+        _response = await _client.GetAsync($"/Product?search={search}");
+        _response.EnsureSuccessStatusCode();
     }
 }

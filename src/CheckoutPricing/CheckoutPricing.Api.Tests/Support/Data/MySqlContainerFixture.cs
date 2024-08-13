@@ -16,6 +16,9 @@ public class MySqlContainerFixture : IAsyncLifetime
         var mysqlImageName = Environment.GetEnvironmentVariable("MYSQL_TEST_VERSION") ?? "mysql:8.0";
         MySqlContainer = new MySqlBuilder()
             .WithImage(mysqlImageName)
+            .WithUsername("root")
+            .WithPassword("cool")
+            .WithDatabase("kata09db")
             .Build();
     }
 
