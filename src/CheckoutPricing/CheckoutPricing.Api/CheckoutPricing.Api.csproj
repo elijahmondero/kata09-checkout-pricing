@@ -27,6 +27,7 @@
     <PackageReference Include="dbup" Version="5.0.41" />
     <PackageReference Include="dbup-mysql" Version="5.0.44" />
     <PackageReference Include="SqlKata" Version="2.4.0" />
+    <PackageReference Include="SqlKata.Execution" Version="2.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
   </ItemGroup>
 

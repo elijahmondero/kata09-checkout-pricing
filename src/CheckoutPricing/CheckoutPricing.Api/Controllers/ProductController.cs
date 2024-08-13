@@ -4,6 +4,8 @@ using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
+using SqlKata.Compilers;
+using SqlKata.Execution;
 
 namespace CheckoutPricing.Api.Controllers;
 
@@ -14,14 +16,20 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
 {
     private readonly string _connectionString = databaseSettings.Value.ConnectionString!;
 
+    private QueryFactory CreateQueryFactory()
+    {
+        var connection = new MySqlConnection(_connectionString);
+        var compiler = new MySqlCompiler();
+        return new QueryFactory(connection, compiler);
+    }
+
     [HttpPost("")]
     public async Task<IActionResult> AddProduct([FromBody] Product product)
     {
         try
         {
-            await using var connection = new MySqlConnection(_connectionString);
-            const string query = "INSERT INTO Products (Id, Name, UnitPrice) VALUES (@Id, @Name, @UnitPrice)";
-            await connection.ExecuteAsync(query, new { product.Id, product.Name, product.UnitPrice });
+            var db = CreateQueryFactory();
+            await db.Query("Products").InsertAsync(new { product.Id, product.Name, product.UnitPrice });
             return Ok();
         }
         catch (Exception ex)
@@ -36,9 +44,8 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
     {
         try
         {
-            await using var connection = new MySqlConnection(_connectionString);
-            const string query = "UPDATE Products SET Name = @Name, UnitPrice = @UnitPrice WHERE Id = @Id";
-            var affectedRows = await connection.ExecuteAsync(query, new { Id = id, updatedProduct.Name, updatedProduct.UnitPrice });
+            var db = CreateQueryFactory();
+            var affectedRows = await db.Query("Products").Where("Id", id).UpdateAsync(new { updatedProduct.Name, updatedProduct.UnitPrice });
 
             if (affectedRows == 0)
             {
@@ -59,9 +66,8 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
     {
         try
         {
-            await using var connection = new MySqlConnection(_connectionString);
-            const string query = "DELETE FROM Products WHERE Id = @Id";
-            var affectedRows = await connection.ExecuteAsync(query, new { Id = id });
+            var db = CreateQueryFactory();
+            var affectedRows = await db.Query("Products").Where("Id", id).DeleteAsync();
 
             if (affectedRows == 0)
             {
