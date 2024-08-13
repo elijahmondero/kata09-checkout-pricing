@@ -23,6 +23,10 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
         return new QueryFactory(connection, compiler);
     }
 
+    /// <summary>
+    /// Adds a new product.
+    /// </summary>
+    /// <param name="product">The product to add.</param>
     [HttpPost("")]
     public async Task<IActionResult> AddProduct([FromBody] Product product)
     {
@@ -39,6 +43,11 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
         }
     }
 
+    /// <summary>
+    /// Updates an existing product.
+    /// </summary>
+    /// <param name="id">The ID of the product to update.</param>
+    /// <param name="updatedProduct">The updated product details.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(string id, [FromBody] Product updatedProduct)
     {
@@ -61,6 +70,10 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
         }
     }
 
+    /// <summary>
+    /// Removes a product.
+    /// </summary>
+    /// <param name="id">The ID of the product to remove.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemoveProduct(string id)
     {
@@ -83,6 +96,10 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
         }
     }
 
+    /// <summary>
+    /// Retrieves a product by ID.
+    /// </summary>
+    /// <param name="id">The ID of the product to retrieve.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProduct(string id)
     {

@@ -23,6 +23,9 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         return new QueryFactory(connection, compiler);
     }
 
+    /// <summary>
+    /// Starts a new checkout session.
+    /// </summary>
     [HttpPost("session/start")]
     public async Task<IActionResult> StartSession()
     {
@@ -41,6 +44,11 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         }
     }
 
+    /// <summary>
+    /// Ends an active checkout session.
+    /// </summary>
+    /// <param name="sessionId">The ID of the session to end.</param>
+    /// <param name="paymentDetails">The payment details for the session.</param>
     [HttpPost("session/end/{sessionId}")]
     public async Task<IActionResult> EndSession(string sessionId, [FromBody] PaymentDetails paymentDetails)
     {
@@ -75,6 +83,10 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         }
     }
 
+    /// <summary>
+    /// Cancels an active checkout session.
+    /// </summary>
+    /// <param name="sessionId">The ID of the session to cancel.</param>
     [HttpPost("session/cancel/{sessionId}")]
     public async Task<IActionResult> CancelSession(string sessionId)
     {
@@ -98,6 +110,11 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         }
     }
 
+    /// <summary>
+    /// Scans a product and adds it to the checkout session.
+    /// </summary>
+    /// <param name="sessionId">The ID of the session.</param>
+    /// <param name="productId">The ID of the product to scan.</param>
     [HttpPost("scan/{sessionId}/{productId}")]
     public async Task<IActionResult> ScanProduct(string sessionId, string productId)
     {
@@ -131,6 +148,10 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         }
     }
 
+    /// <summary>
+    /// Gets the total amount for the checkout session.
+    /// </summary>
+    /// <param name="sessionId">The ID of the session.</param>
     [HttpGet("total/{sessionId}")]
     public async Task<IActionResult> GetTotal(string sessionId)
     {
@@ -146,6 +167,10 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         }
     }
 
+    /// <summary>
+    /// Sets the pricing rules for products.
+    /// </summary>
+    /// <param name="pricingRules">The list of pricing rules to set.</param>
     [HttpPost("pricing/rules")]
     public async Task<IActionResult> SetPricingRules([FromBody] List<PricingRule> pricingRules)
     {

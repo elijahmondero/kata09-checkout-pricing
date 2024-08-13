@@ -1,6 +1,0 @@
-@CheckoutPricing.Api_HostAddress = http://localhost:5062
-
-GET {{CheckoutPricing.Api_HostAddress}}/checkout/
-Accept: application/json
-
-###
