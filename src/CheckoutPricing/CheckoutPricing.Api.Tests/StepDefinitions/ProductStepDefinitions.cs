@@ -74,7 +74,7 @@ public class ProductStepDefinitions
         _response.EnsureSuccessStatusCode();
 
         var product = JsonConvert.DeserializeObject<Product>(await _response.Content.ReadAsStringAsync());
-        if (product.Name != name || product.UnitPrice != unitPrice)
+        if (product!.Name != name || product.UnitPrice != unitPrice)
         {
             throw new Exception("Product details do not match.");
         }
