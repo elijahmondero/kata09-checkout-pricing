@@ -22,10 +22,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore src/CheckoutPricing.Api.Tests/CheckoutPricing.Api.Tests.csproj
+      run: dotnet restore src/CheckoutPricing/CheckoutPricing.Api.Tests/CheckoutPricing.Api.Tests.csproj
 
     - name: Build the app
-      run: dotnet build --no-restore src/CheckoutPricing.Api.Tests/CheckoutPricing.Api.Tests.csproj
+      run: dotnet build --no-restore src/CheckoutPricing/CheckoutPricing.Api.Tests/CheckoutPricing.Api.Tests.csproj
 
     - name: Run tests
-      run: dotnet test --no-build --verbosity normal src/CheckoutPricing.Api.Tests/CheckoutPricing.Api.Tests.csproj
+      run: dotnet test --no-build --verbosity normal src/CheckoutPricing/CheckoutPricing.Api.Tests/CheckoutPricing.Api.Tests.csproj
