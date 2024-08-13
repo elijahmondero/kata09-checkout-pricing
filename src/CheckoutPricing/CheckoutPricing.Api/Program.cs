@@ -14,6 +14,15 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Add CORS services
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin",
+                builder => builder.WithOrigins("http://localhost:3000")
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod());
+        });
+
         // Configure logging
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
@@ -48,6 +57,9 @@ public class Program
         // Swagger
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        // Use CORS policy
+        app.UseCors("AllowSpecificOrigin");
 
         app.UseHttpsRedirection();
         app.UseAuthorization();
