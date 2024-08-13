@@ -50,3 +50,23 @@
       | B    |
       | C    |
     Then the total price should be 245
+
+  Scenario: Incremental scanning of items
+    Given the following pricing rules:
+      | Item | UnitPrice | SpecialQuantity | SpecialPrice |
+      | A    | 50        | 3               | 130          |
+      | B    | 30        | 2               | 45           |
+      | C    | 20        |                 |              |
+      | D    | 15        |                 |              |
+    When I scan the item "A"
+    Then the total price should be 50
+    When I scan the item "B"
+    Then the total price should be 80
+    When I scan the item "A"
+    Then the total price should be 130
+    When I scan the item "A"
+    Then the total price should be 160
+    When I scan the item "B"
+    Then the total price should be 175
+    When I scan the item "C"
+    Then the total price should be 195

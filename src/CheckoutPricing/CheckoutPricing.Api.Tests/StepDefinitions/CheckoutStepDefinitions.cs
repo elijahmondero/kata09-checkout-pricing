@@ -50,6 +50,13 @@ namespace CheckoutPricing.Api.Tests.StepDefinitions
             }
         }
 
+        [When(@"I scan the item ""(.*)""")]
+        public async Task WhenIScanTheItem(string item)
+        {
+            _response = await _client.PostAsync($"/checkout/scan/{item}", null);
+            _response.EnsureSuccessStatusCode();
+        }
+
         [Then(@"the total price should be (.*)")]
         public async Task ThenTheTotalPriceShouldBe(int expectedTotal)
         {

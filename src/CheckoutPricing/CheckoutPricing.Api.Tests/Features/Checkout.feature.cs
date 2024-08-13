@@ -306,6 +306,102 @@ namespace CheckoutPricing.Api.Tests.Features
             this.ScenarioCleanup();
         }
         
+        [Xunit.SkippableFactAttribute(DisplayName="Incremental scanning of items")]
+        [Xunit.TraitAttribute("FeatureTitle", "Checkout")]
+        [Xunit.TraitAttribute("Description", "Incremental scanning of items")]
+        public virtual void IncrementalScanningOfItems()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Incremental scanning of items", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 54
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Item",
+                            "UnitPrice",
+                            "SpecialQuantity",
+                            "SpecialPrice"});
+                table7.AddRow(new string[] {
+                            "A",
+                            "50",
+                            "3",
+                            "130"});
+                table7.AddRow(new string[] {
+                            "B",
+                            "30",
+                            "2",
+                            "45"});
+                table7.AddRow(new string[] {
+                            "C",
+                            "20",
+                            "",
+                            ""});
+                table7.AddRow(new string[] {
+                            "D",
+                            "15",
+                            "",
+                            ""});
+#line 55
+    testRunner.Given("the following pricing rules:", ((string)(null)), table7, "Given ");
+#line hidden
+#line 61
+    testRunner.When("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 62
+    testRunner.Then("the total price should be 50", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 63
+    testRunner.When("I scan the item \"B\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 64
+    testRunner.Then("the total price should be 80", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 65
+    testRunner.When("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 66
+    testRunner.Then("the total price should be 130", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 67
+    testRunner.When("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 68
+    testRunner.Then("the total price should be 160", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 69
+    testRunner.When("I scan the item \"B\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 70
+    testRunner.Then("the total price should be 175", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 71
+    testRunner.When("I scan the item \"C\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 72
+    testRunner.Then("the total price should be 195", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
         [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
         [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : System.IDisposable
