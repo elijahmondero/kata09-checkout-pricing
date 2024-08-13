@@ -1,97 +1,92 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
-using System;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using CheckoutPricing.Api.Models;
-using TechTalk.SpecFlow;
 
-namespace CheckoutPricing.Api.Tests.StepDefinitions
+namespace CheckoutPricing.Api.Tests.StepDefinitions;
+
+[Binding]
+public class ProductStepDefinitions
 {
-    [Binding]
-    public class ProductStepDefinitions
+    private readonly HttpClient _client;
+    private HttpResponseMessage? _response;
+
+    public ProductStepDefinitions()
     {
-        private readonly HttpClient _client;
-        private HttpResponseMessage _response;
+        var factory = new WebApplicationFactory<Program>();
+        _client = factory.CreateClient();
+    }
 
-        public ProductStepDefinitions()
+    [Given(@"I add the following product:")]
+    public async Task GivenIAddTheFollowingProduct(Table table)
+    {
+        foreach (var row in table.Rows)
         {
-            var factory = new WebApplicationFactory<Program>();
-            _client = factory.CreateClient();
-        }
-
-        [Given(@"I add the following product:")]
-        public async Task GivenIAddTheFollowingProduct(Table table)
-        {
-            foreach (var row in table.Rows)
+            var product = new Product
             {
-                var product = new Product
-                {
-                    Id = row["Id"],
-                    Name = row["Name"],
-                    UnitPrice = decimal.Parse(row["UnitPrice"])
-                };
+                Id = row["Id"],
+                Name = row["Name"],
+                UnitPrice = decimal.Parse(row["UnitPrice"])
+            };
 
-                var content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
-                _response = await _client.PostAsync("/Product", content);
-                _response.EnsureSuccessStatusCode();
-            }
-        }
-
-        [When(@"I update the product with:")]
-        public async Task WhenIUpdateTheProductWith(Table table)
-        {
-            foreach (var row in table.Rows)
-            {
-                var product = new Product
-                {
-                    Id = row["Id"],
-                    Name = row["Name"],
-                    UnitPrice = decimal.Parse(row["UnitPrice"])
-                };
-
-                var content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
-                _response = await _client.PutAsync($"/Product/{product.Id}", content);
-                _response.EnsureSuccessStatusCode();
-            }
-        }
-
-        [When(@"I remove the product with id ""(.*)""")]
-        public async Task WhenIRemoveTheProductWithId(string productId)
-        {
-            _response = await _client.DeleteAsync($"/Product/{productId}");
+            var content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
+            _response = await _client.PostAsync("/Product", content);
             _response.EnsureSuccessStatusCode();
         }
+    }
 
-        [Then(@"the product ""(.*)"" should exist")]
-        public async Task ThenTheProductShouldExist(string productId)
+    [When(@"I update the product with:")]
+    public async Task WhenIUpdateTheProductWith(Table table)
+    {
+        foreach (var row in table.Rows)
         {
-            _response = await _client.GetAsync($"/Product/{productId}");
+            var product = new Product
+            {
+                Id = row["Id"],
+                Name = row["Name"],
+                UnitPrice = decimal.Parse(row["UnitPrice"])
+            };
+
+            var content = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
+            _response = await _client.PutAsync($"/Product/{product.Id}", content);
             _response.EnsureSuccessStatusCode();
         }
+    }
 
-        [Then(@"the product ""(.*)"" should have the name ""(.*)"" and the unit price (.*)")]
-        public async Task ThenTheProductShouldHaveTheNameAndTheUnitPrice(string productId, string name, decimal unitPrice)
+    [When(@"I remove the product with id ""(.*)""")]
+    public async Task WhenIRemoveTheProductWithId(string productId)
+    {
+        _response = await _client.DeleteAsync($"/Product/{productId}");
+        _response.EnsureSuccessStatusCode();
+    }
+
+    [Then(@"the product ""(.*)"" should exist")]
+    public async Task ThenTheProductShouldExist(string productId)
+    {
+        _response = await _client.GetAsync($"/Product/{productId}");
+        _response.EnsureSuccessStatusCode();
+    }
+
+    [Then(@"the product ""(.*)"" should have the name ""(.*)"" and the unit price (.*)")]
+    public async Task ThenTheProductShouldHaveTheNameAndTheUnitPrice(string productId, string name, decimal unitPrice)
+    {
+        _response = await _client.GetAsync($"/Product/{productId}");
+        _response.EnsureSuccessStatusCode();
+
+        var product = JsonConvert.DeserializeObject<Product>(await _response.Content.ReadAsStringAsync());
+        if (product.Name != name || product.UnitPrice != unitPrice)
         {
-            _response = await _client.GetAsync($"/Product/{productId}");
-            _response.EnsureSuccessStatusCode();
-
-            var product = JsonConvert.DeserializeObject<Product>(await _response.Content.ReadAsStringAsync());
-            if (product.Name != name || product.UnitPrice != unitPrice)
-            {
-                throw new Exception("Product details do not match.");
-            }
+            throw new Exception("Product details do not match.");
         }
+    }
 
-        [Then(@"the product ""(.*)"" should not exist")]
-        public async Task ThenTheProductShouldNotExist(string productId)
+    [Then(@"the product ""(.*)"" should not exist")]
+    public async Task ThenTheProductShouldNotExist(string productId)
+    {
+        _response = await _client.GetAsync($"/Product/{productId}");
+        if (_response.IsSuccessStatusCode)
         {
-            _response = await _client.GetAsync($"/Product/{productId}");
-            if (_response.IsSuccessStatusCode)
-            {
-                throw new Exception("Product still exists.");
-            }
+            throw new Exception("Product still exists.");
         }
     }
 }
