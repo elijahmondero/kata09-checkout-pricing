@@ -139,7 +139,7 @@ namespace CheckoutPricing.Api.Tests.Features
                             "Name",
                             "UnitPrice"});
                 table9.AddRow(new string[] {
-                            "P01",
+                            "P02",
                             "Apple",
                             "0.60"});
 #line 11
@@ -150,14 +150,14 @@ namespace CheckoutPricing.Api.Tests.Features
                             "Name",
                             "UnitPrice"});
                 table10.AddRow(new string[] {
-                            "P01",
+                            "P02",
                             "Orange",
                             "0.70"});
 #line 14
     testRunner.When("I update the product with:", ((string)(null)), table10, "When ");
 #line hidden
 #line 17
-    testRunner.Then("the product \"P01\" should have the name \"Orange\" and the unit price 0.70", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the product \"P02\" should have the name \"Orange\" and the unit price 0.70", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -186,17 +186,17 @@ namespace CheckoutPricing.Api.Tests.Features
                             "Name",
                             "UnitPrice"});
                 table11.AddRow(new string[] {
-                            "P01",
+                            "P03",
                             "Apple",
                             "0.60"});
 #line 20
     testRunner.Given("I add the following product:", ((string)(null)), table11, "Given ");
 #line hidden
 #line 23
-    testRunner.When("I remove the product with id \"P01\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When("I remove the product with id \"P03\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 24
-    testRunner.Then("the product \"P01\" should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the product \"P03\" should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
