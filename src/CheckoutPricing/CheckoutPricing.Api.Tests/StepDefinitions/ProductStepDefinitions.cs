@@ -2,19 +2,52 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System.Text;
 using CheckoutPricing.Api.Models;
+using CheckoutPricing.Api.Tests.Support.Data;
+using System.Data;
+using Microsoft.Extensions.DependencyInjection;
+using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace CheckoutPricing.Api.Tests.StepDefinitions;
 
 [Binding]
+[Collection("MySqlContainer")]
 public class ProductStepDefinitions
 {
     private readonly HttpClient _client;
     private HttpResponseMessage? _response;
+    private readonly MySqlContainerFixture _fixture;
 
-    public ProductStepDefinitions()
+    public ProductStepDefinitions(MySqlContainerFixture fixture)
     {
-        var factory = new WebApplicationFactory<Program>();
+        _fixture = fixture;
+
+        var factory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureAppConfiguration((context, config) =>
+                {
+                    var settings = new Dictionary<string, string>
+                    {
+                        { "DatabaseSettings:ConnectionString", _fixture.MySqlContainer.GetConnectionString() }
+                    };
+                    config.AddInMemoryCollection(settings!);
+                });
+            });
         _client = factory.CreateClient();
+    }
+
+
+    [BeforeFeature]
+    public static async Task Before(MySqlContainerFixture fixture)
+    {
+        await fixture.InitializeAsync();
+    }
+
+    [AfterFeature]
+    public static async Task After(MySqlContainerFixture fixture)
+    {
+        await fixture.DisposeAsync();
     }
 
     [Given(@"I add the following product:")]

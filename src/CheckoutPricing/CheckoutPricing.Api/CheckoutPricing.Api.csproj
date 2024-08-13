@@ -15,7 +15,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\Migrations\001_CreateTables.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Migrations\001_CreateTables.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="dbup" Version="5.0.41" />
+    <PackageReference Include="dbup-mysql" Version="5.0.44" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
   </ItemGroup>
 
