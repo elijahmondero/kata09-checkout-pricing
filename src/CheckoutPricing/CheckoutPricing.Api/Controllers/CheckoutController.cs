@@ -1,55 +1,210 @@
+using CheckoutPricing.Api.Data;
 using CheckoutPricing.Api.Models;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
+using SqlKata.Compilers;
+using SqlKata.Execution;
 
 namespace CheckoutPricing.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CheckoutController : ControllerBase
+public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILogger<CheckoutController> logger)
+    : ControllerBase
 {
-    private static readonly List<PricingRule> PricingRules = [];
-    private static readonly Dictionary<string, int> Items = new();
+    private readonly string _connectionString = databaseSettings.Value.ConnectionString!;
 
+    private QueryFactory CreateQueryFactory()
+    {
+        var connection = new MySqlConnection(_connectionString);
+        var compiler = new MySqlCompiler();
+        return new QueryFactory(connection, compiler);
+    }
+
+    [HttpPost("session/start")]
+    public async Task<IActionResult> StartSession()
+    {
+        try
+        {
+            var db = CreateQueryFactory();
+            var sessionId = Guid.NewGuid().ToString();
+            await db.Query("CheckoutSessions").InsertAsync(new { SessionId = sessionId, Status = "Active", CreatedAt = DateTime.UtcNow });
+
+            return Ok(new { SessionId = sessionId });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error starting checkout session");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    [HttpPost("session/end/{sessionId}")]
+    public async Task<IActionResult> EndSession(string sessionId, [FromBody] PaymentDetails paymentDetails)
+    {
+        try
+        {
+            var db = CreateQueryFactory();
+            var session = await db.Query("CheckoutSessions").Where("SessionId", sessionId).FirstOrDefaultAsync();
+
+            if (session == null || session!.Status != "Active")
+            {
+                return BadRequest("Invalid or inactive session");
+            }
+
+            var total = await CalculateTotal(sessionId);
+            // Process payment (this is a placeholder, actual payment processing logic should be implemented)
+            var paymentSuccess = ProcessPayment(paymentDetails, total);
+
+            if (paymentSuccess)
+            {
+                await db.Query("CheckoutSessions").Where("SessionId", sessionId).UpdateAsync(new { Status = "Completed", TotalAmount = total, EndedAt = DateTime.UtcNow });
+                return Ok(new { TotalAmount = total });
+            }
+            else
+            {
+                return StatusCode(500, "Payment processing failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error ending checkout session");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    [HttpPost("session/cancel/{sessionId}")]
+    public async Task<IActionResult> CancelSession(string sessionId)
+    {
+        try
+        {
+            var db = CreateQueryFactory();
+            var session = await db.Query("CheckoutSessions").Where("SessionId", sessionId).FirstOrDefaultAsync();
+
+            if (session == null || session!.Status != "Active")
+            {
+                return BadRequest("Invalid or inactive session");
+            }
+
+            await db.Query("CheckoutSessions").Where("SessionId", sessionId).UpdateAsync(new { Status = "Cancelled", EndedAt = DateTime.UtcNow });
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error cancelling checkout session");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    [HttpPost("scan/{sessionId}/{productId}")]
+    public async Task<IActionResult> ScanProduct(string sessionId, string productId)
+    {
+        try
+        {
+            var db = CreateQueryFactory();
+            var session = await db.Query("CheckoutSessions").Where("SessionId", sessionId).FirstOrDefaultAsync();
+
+            if (session == null || session!.Status != "Active")
+            {
+                return BadRequest("Invalid or inactive session");
+            }
+
+            var existingItem = await db.Query("CheckoutItems").Where("SessionId", sessionId).Where("ProductId", productId).FirstOrDefaultAsync();
+
+            if (existingItem == null)
+            {
+                await db.Query("CheckoutItems").InsertAsync(new { SessionId = sessionId, ProductId = productId, Quantity = 1 });
+            }
+            else
+            {
+                await db.Query("CheckoutItems").Where("SessionId", sessionId).Where("ProductId", productId).IncrementAsync("Quantity", 1);
+            }
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Error scanning item {ex}");
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpGet("total/{sessionId}")]
+    public async Task<IActionResult> GetTotal(string sessionId)
+    {
+        try
+        {
+            var total = await CalculateTotal(sessionId);
+            return Ok(total);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error calculating total");
+            return StatusCode(500, "Internal server error");
+        }
+    }
 
     [HttpPost("pricing/rules")]
-    public IActionResult SetPricingRules([FromBody] List<PricingRule> rules)
+    public async Task<IActionResult> SetPricingRules([FromBody] List<PricingRule> pricingRules)
     {
-        PricingRules.Clear();
-        PricingRules.AddRange(rules);
-        Items.Clear(); // Clear items on pricing rule change
-        return Ok();
+        try
+        {
+            var db = CreateQueryFactory();
+            foreach (var rule in pricingRules)
+            {
+                var existingRule = await db.Query("PricingRules").Where("ProductId", rule.ProductId).FirstOrDefaultAsync();
+                if (existingRule == null)
+                {
+                    await db.Query("PricingRules").InsertAsync(rule);
+                }
+                else
+                {
+                    await db.Query("PricingRules").Where("ProductId", rule.ProductId).UpdateAsync(rule);
+                }
+            }
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error setting pricing rules");
+            return StatusCode(500, "Internal server error");
+        }
     }
 
-    [HttpPost("scan/{item}")]
-    public IActionResult ScanItem(string item)
+    private async Task<decimal> CalculateTotal(string sessionId)
     {
-        Items.TryAdd(item, 0);
-        Items[item]++;
-        return Ok();
-    }
+        var db = CreateQueryFactory();
+        var items = await db.Query("CheckoutItems").Where("SessionId", sessionId).GetAsync<CheckoutItem>();
+        var pricingRules = await db.Query("PricingRules").GetAsync<PricingRule>();
 
-    [HttpGet("total")]
-    public IActionResult GetTotal()
-    {
         decimal total = 0;
 
-        foreach (var item in Items)
+        foreach (var item in items)
         {
-            var rule = PricingRules.Find(r => r.Item == item.Key);
+            var rule = pricingRules.FirstOrDefault(r => r.ProductId == item.ProductId);
             if (rule == null) continue;
-            if (rule.SpecialQuantity.HasValue && item.Value >= rule.SpecialQuantity)
+
+            if (rule.SpecialQuantity.HasValue && item.Quantity >= rule.SpecialQuantity)
             {
-                var specialBundleCount = item.Value / rule.SpecialQuantity.Value;
-                var remainingItems = item.Value % rule.SpecialQuantity.Value;
+                var specialBundleCount = item.Quantity / rule.SpecialQuantity!.Value;
+                var remainingItems = item.Quantity % rule.SpecialQuantity.Value;
                 if (rule.SpecialPrice != null)
                     total += specialBundleCount * rule.SpecialPrice.Value + remainingItems * rule.UnitPrice;
             }
             else
             {
-                total += item.Value * rule.UnitPrice;
+                total += item.Quantity * rule.UnitPrice;
             }
         }
 
-        return Ok(total);
+        return total;
+    }
+
+    private bool ProcessPayment(PaymentDetails paymentDetails, decimal total)
+    {
+        // Placeholder for payment processing logic
+        return true;
     }
 }

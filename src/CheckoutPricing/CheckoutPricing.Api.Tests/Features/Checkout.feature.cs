@@ -40,9 +40,7 @@ namespace CheckoutPricing.Api.Tests.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Checkout", "  To calculate the total price of items in the shopping cart\r\n  [Calculator](Chec" +
-                    "koutPricing.Api.Tests/Features/Checkout.feature)\r\n  **[Checkout Feature](http://" +
-                    "codekata.com/kata/kata09-back-to-the-checkout/)**", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Checkout", "  To calculate the total price of items in the shopping cart", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -90,7 +88,7 @@ namespace CheckoutPricing.Api.Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Calculate total price without special offers", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 6
+#line 4
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -101,36 +99,68 @@ namespace CheckoutPricing.Api.Tests.Features
             {
                 this.ScenarioStart();
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Item",
+                            "Id",
+                            "Name",
                             "UnitPrice"});
                 table1.AddRow(new string[] {
-                            "A",
+                            "A1",
+                            "Apple",
                             "50"});
                 table1.AddRow(new string[] {
-                            "B",
+                            "B1",
+                            "Banana",
                             "30"});
                 table1.AddRow(new string[] {
-                            "C",
+                            "C1",
+                            "Carrot",
                             "20"});
-                table1.AddRow(new string[] {
-                            "D",
-                            "15"});
-#line 7
-    testRunner.Given("the following pricing rules:", ((string)(null)), table1, "Given ");
+#line 5
+    testRunner.Given("the following products exist:", ((string)(null)), table1, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Item"});
+                            "Item",
+                            "UnitPrice"});
                 table2.AddRow(new string[] {
-                            "A"});
+                            "A1",
+                            "50"});
                 table2.AddRow(new string[] {
-                            "B"});
+                            "B1",
+                            "30"});
                 table2.AddRow(new string[] {
-                            "C"});
-#line 13
-    testRunner.When("I scan the following items:", ((string)(null)), table2, "When ");
+                            "C1",
+                            "20"});
+#line 10
+    testRunner.And("the following pricing rules:", ((string)(null)), table2, "And ");
 #line hidden
-#line 18
+#line 15
+    testRunner.When("I start a new checkout session", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Item"});
+                table3.AddRow(new string[] {
+                            "A1"});
+                table3.AddRow(new string[] {
+                            "B1"});
+                table3.AddRow(new string[] {
+                            "C1"});
+#line 16
+    testRunner.And("I scan the following items:", ((string)(null)), table3, "And ");
+#line hidden
+#line 21
     testRunner.Then("the total price should be 100", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "PaymentMethod",
+                            "CardNumber",
+                            "CardExpiry",
+                            "CardCvc"});
+                table4.AddRow(new string[] {
+                            "CreditCard",
+                            "1234567890",
+                            "12/23",
+                            "123"});
+#line 22
+    testRunner.And("I end the checkout session with payment details:", ((string)(null)), table4, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -144,7 +174,7 @@ namespace CheckoutPricing.Api.Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Calculate total price with special offers", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 20
+#line 26
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -154,51 +184,81 @@ namespace CheckoutPricing.Api.Tests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Id",
+                            "Name",
+                            "UnitPrice"});
+                table5.AddRow(new string[] {
+                            "A2",
+                            "Apple",
+                            "50"});
+                table5.AddRow(new string[] {
+                            "B2",
+                            "Banana",
+                            "30"});
+                table5.AddRow(new string[] {
+                            "C2",
+                            "Carrot",
+                            "20"});
+#line 27
+    testRunner.Given("the following products exist:", ((string)(null)), table5, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "Item",
                             "UnitPrice",
                             "SpecialQuantity",
                             "SpecialPrice"});
-                table3.AddRow(new string[] {
-                            "A",
+                table6.AddRow(new string[] {
+                            "A2",
                             "50",
                             "3",
                             "130"});
-                table3.AddRow(new string[] {
-                            "B",
+                table6.AddRow(new string[] {
+                            "B2",
                             "30",
                             "2",
                             "45"});
-                table3.AddRow(new string[] {
-                            "C",
+                table6.AddRow(new string[] {
+                            "C2",
                             "20",
                             "",
                             ""});
-                table3.AddRow(new string[] {
-                            "D",
-                            "15",
-                            "",
-                            ""});
-#line 21
-    testRunner.Given("the following pricing rules:", ((string)(null)), table3, "Given ");
+#line 32
+    testRunner.And("the following pricing rules:", ((string)(null)), table6, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+#line 37
+    testRunner.When("I start a new checkout session", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                             "Item"});
-                table4.AddRow(new string[] {
-                            "A"});
-                table4.AddRow(new string[] {
-                            "A"});
-                table4.AddRow(new string[] {
-                            "A"});
-                table4.AddRow(new string[] {
-                            "B"});
-                table4.AddRow(new string[] {
-                            "B"});
-#line 27
-    testRunner.When("I scan the following items:", ((string)(null)), table4, "When ");
+                table7.AddRow(new string[] {
+                            "A2"});
+                table7.AddRow(new string[] {
+                            "A2"});
+                table7.AddRow(new string[] {
+                            "A2"});
+                table7.AddRow(new string[] {
+                            "B2"});
+                table7.AddRow(new string[] {
+                            "B2"});
+#line 38
+    testRunner.And("I scan the following items:", ((string)(null)), table7, "And ");
 #line hidden
-#line 34
+#line 45
     testRunner.Then("the total price should be 175", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                            "PaymentMethod",
+                            "CardNumber",
+                            "CardExpiry",
+                            "CardCvc"});
+                table8.AddRow(new string[] {
+                            "CreditCard",
+                            "1234567890",
+                            "12/23",
+                            "123"});
+#line 46
+    testRunner.And("I end the checkout session with payment details:", ((string)(null)), table8, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -212,7 +272,7 @@ namespace CheckoutPricing.Api.Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Calculate total price with a mix of special and regular prices", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 36
+#line 50
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -222,55 +282,85 @@ namespace CheckoutPricing.Api.Tests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Id",
+                            "Name",
+                            "UnitPrice"});
+                table9.AddRow(new string[] {
+                            "A3",
+                            "Apple",
+                            "50"});
+                table9.AddRow(new string[] {
+                            "B3",
+                            "Banana",
+                            "30"});
+                table9.AddRow(new string[] {
+                            "C3",
+                            "Carrot",
+                            "20"});
+#line 51
+    testRunner.Given("the following products exist:", ((string)(null)), table9, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                             "Item",
                             "UnitPrice",
                             "SpecialQuantity",
                             "SpecialPrice"});
-                table5.AddRow(new string[] {
-                            "A",
+                table10.AddRow(new string[] {
+                            "A3",
                             "50",
                             "3",
                             "130"});
-                table5.AddRow(new string[] {
-                            "B",
+                table10.AddRow(new string[] {
+                            "B3",
                             "30",
                             "2",
                             "45"});
-                table5.AddRow(new string[] {
-                            "C",
+                table10.AddRow(new string[] {
+                            "C3",
                             "20",
                             "",
                             ""});
-                table5.AddRow(new string[] {
-                            "D",
-                            "15",
-                            "",
-                            ""});
-#line 37
-    testRunner.Given("the following pricing rules:", ((string)(null)), table5, "Given ");
+#line 56
+    testRunner.And("the following pricing rules:", ((string)(null)), table10, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+#line 61
+    testRunner.When("I start a new checkout session", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                             "Item"});
-                table6.AddRow(new string[] {
-                            "A"});
-                table6.AddRow(new string[] {
-                            "A"});
-                table6.AddRow(new string[] {
-                            "A"});
-                table6.AddRow(new string[] {
-                            "A"});
-                table6.AddRow(new string[] {
-                            "B"});
-                table6.AddRow(new string[] {
-                            "B"});
-                table6.AddRow(new string[] {
-                            "C"});
-#line 43
-    testRunner.When("I scan the following items:", ((string)(null)), table6, "When ");
+                table11.AddRow(new string[] {
+                            "A3"});
+                table11.AddRow(new string[] {
+                            "A3"});
+                table11.AddRow(new string[] {
+                            "A3"});
+                table11.AddRow(new string[] {
+                            "A3"});
+                table11.AddRow(new string[] {
+                            "B3"});
+                table11.AddRow(new string[] {
+                            "B3"});
+                table11.AddRow(new string[] {
+                            "C3"});
+#line 62
+    testRunner.And("I scan the following items:", ((string)(null)), table11, "And ");
 #line hidden
-#line 52
+#line 71
     testRunner.Then("the total price should be 245", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                            "PaymentMethod",
+                            "CardNumber",
+                            "CardExpiry",
+                            "CardCvc"});
+                table12.AddRow(new string[] {
+                            "CreditCard",
+                            "1234567890",
+                            "12/23",
+                            "123"});
+#line 72
+    testRunner.And("I end the checkout session with payment details:", ((string)(null)), table12, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -284,7 +374,7 @@ namespace CheckoutPricing.Api.Tests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Incremental scanning of items", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 54
+#line 76
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -294,69 +384,99 @@ namespace CheckoutPricing.Api.Tests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Id",
+                            "Name",
+                            "UnitPrice"});
+                table13.AddRow(new string[] {
+                            "A",
+                            "Apple",
+                            "50"});
+                table13.AddRow(new string[] {
+                            "B",
+                            "Banana",
+                            "30"});
+                table13.AddRow(new string[] {
+                            "C",
+                            "Carrot",
+                            "20"});
+#line 77
+    testRunner.Given("the following products exist:", ((string)(null)), table13, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "Item",
                             "UnitPrice",
                             "SpecialQuantity",
                             "SpecialPrice"});
-                table7.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "A",
                             "50",
                             "3",
                             "130"});
-                table7.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "B",
                             "30",
                             "2",
                             "45"});
-                table7.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "C",
                             "20",
                             "",
                             ""});
-                table7.AddRow(new string[] {
-                            "D",
-                            "15",
-                            "",
-                            ""});
-#line 55
-    testRunner.Given("the following pricing rules:", ((string)(null)), table7, "Given ");
+#line 82
+    testRunner.And("the following pricing rules:", ((string)(null)), table14, "And ");
 #line hidden
-#line 61
-    testRunner.When("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 87
+    testRunner.When("I start a new checkout session", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 62
+#line 88
+    testRunner.And("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 89
     testRunner.Then("the total price should be 50", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 63
+#line 90
     testRunner.When("I scan the item \"B\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 64
+#line 91
     testRunner.Then("the total price should be 80", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 65
+#line 92
     testRunner.When("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 66
+#line 93
     testRunner.Then("the total price should be 130", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 67
+#line 94
     testRunner.When("I scan the item \"A\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 68
+#line 95
     testRunner.Then("the total price should be 160", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 69
+#line 96
     testRunner.When("I scan the item \"B\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 70
+#line 97
     testRunner.Then("the total price should be 175", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 71
+#line 98
     testRunner.When("I scan the item \"C\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 72
+#line 99
     testRunner.Then("the total price should be 195", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                            "PaymentMethod",
+                            "CardNumber",
+                            "CardExpiry",
+                            "CardCvc"});
+                table15.AddRow(new string[] {
+                            "CreditCard",
+                            "1234567890",
+                            "12/23",
+                            "123"});
+#line 100
+    testRunner.And("I end the checkout session with payment details:", ((string)(null)), table15, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

@@ -98,16 +98,16 @@ namespace CheckoutPricing.Api.Tests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Name",
                             "UnitPrice"});
-                table8.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "P01",
                             "Apple",
                             "0.60"});
 #line 5
-    testRunner.Given("I add the following product:", ((string)(null)), table8, "Given ");
+    testRunner.Given("I add the following product:", ((string)(null)), table16, "Given ");
 #line hidden
 #line 8
     testRunner.Then("the product \"P01\" should exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -134,27 +134,27 @@ namespace CheckoutPricing.Api.Tests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Name",
                             "UnitPrice"});
-                table9.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "P02",
                             "Apple",
                             "0.60"});
 #line 11
-    testRunner.Given("I add the following product:", ((string)(null)), table9, "Given ");
+    testRunner.Given("I add the following product:", ((string)(null)), table17, "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Name",
                             "UnitPrice"});
-                table10.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "P02",
                             "Orange",
                             "0.70"});
 #line 14
-    testRunner.When("I update the product with:", ((string)(null)), table10, "When ");
+    testRunner.When("I update the product with:", ((string)(null)), table18, "When ");
 #line hidden
 #line 17
     testRunner.Then("the product \"P02\" should have the name \"Orange\" and the unit price 0.70", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -181,16 +181,16 @@ namespace CheckoutPricing.Api.Tests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Name",
                             "UnitPrice"});
-                table11.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "P03",
                             "Apple",
                             "0.60"});
 #line 20
-    testRunner.Given("I add the following product:", ((string)(null)), table11, "Given ");
+    testRunner.Given("I add the following product:", ((string)(null)), table19, "Given ");
 #line hidden
 #line 23
     testRunner.When("I remove the product with id \"P03\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
