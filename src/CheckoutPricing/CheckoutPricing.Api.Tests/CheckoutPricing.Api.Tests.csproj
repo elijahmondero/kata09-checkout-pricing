@@ -25,4 +25,20 @@
     <ProjectReference Include="..\CheckoutPricing.Api\CheckoutPricing.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Features\Product.feature.cs">
+      <Visible>true</Visible>
+      <DependentUpon>Product.feature</DependentUpon>
+      <DesignTime>true</DesignTime>
+      <AutoGen>true</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\Product.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+  </ItemGroup>
+
 </Project>
