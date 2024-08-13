@@ -16,7 +16,7 @@ public class DatabaseMigrator(string connectionString, ILogger<DatabaseMigrator>
             .WithTransaction()
             .LogToAutodetectedLog()
             .Build();
-        
+
         var result = upgrader.PerformUpgrade();
 
         if (!result.Successful)
