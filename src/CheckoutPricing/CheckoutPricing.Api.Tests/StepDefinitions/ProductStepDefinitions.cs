@@ -3,10 +3,11 @@ using Newtonsoft.Json;
 using System.Text;
 using CheckoutPricing.Api.Models;
 using CheckoutPricing.Api.Tests.Support.Data;
-using System.Data;
-using Microsoft.Extensions.DependencyInjection;
-using MySql.Data.MySqlClient;
+using CheckoutPricing.Api.Tests.Support;
 using Microsoft.Extensions.Configuration;
+using Xunit.Abstractions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CheckoutPricing.Api.Tests.StepDefinitions;
 
@@ -16,12 +17,9 @@ public class ProductStepDefinitions
 {
     private readonly HttpClient _client;
     private HttpResponseMessage? _response;
-    private readonly MySqlContainerFixture _fixture;
 
-    public ProductStepDefinitions(MySqlContainerFixture fixture)
+    public ProductStepDefinitions(MySqlContainerFixture fixture, ITestOutputHelper output)
     {
-        _fixture = fixture;
-
         var factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
@@ -29,9 +27,15 @@ public class ProductStepDefinitions
                 {
                     var settings = new Dictionary<string, string>
                     {
-                        { "DatabaseSettings:ConnectionString", _fixture.MySqlContainer.GetConnectionString() }
+                        { "DatabaseSettings:ConnectionString", fixture.MySqlContainer.GetConnectionString() }
                     };
                     config.AddInMemoryCollection(settings!);
+                });
+
+                builder.ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddProvider(new TestOutputLoggerProvider(output));
                 });
             });
         _client = factory.CreateClient();
