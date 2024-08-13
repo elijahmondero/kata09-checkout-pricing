@@ -122,4 +122,36 @@ public class ProductController(IOptions<DatabaseSettings> databaseSettings, ILog
             return StatusCode(500, "Internal server error");
         }
     }
+
+    /// <summary>
+    /// Retrieves a paged list of products with optional search.
+    /// </summary>
+    /// <param name="page">The page number.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="search">The search term for product names.</param>
+    [HttpGet("")]
+    public async Task<IActionResult> GetProducts(int page = 1, int pageSize = 10, string? search = null)
+    {
+        try
+        {
+            var db = CreateQueryFactory();
+            var query = db.Query("Products");
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.WhereLike("Name", $"%{search}%");
+            }
+
+            var products = await query
+                .ForPage(page, pageSize)
+                .GetAsync<Product>();
+
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error retrieving products");
+            return StatusCode(500, "Internal server error");
+        }
+    }
 }
