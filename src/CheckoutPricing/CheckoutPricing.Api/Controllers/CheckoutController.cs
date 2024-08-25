@@ -204,6 +204,8 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
         var items = await db.Query("CheckoutItems").Where("SessionId", sessionId).GetAsync<CheckoutItem>();
         var pricingRules = await db.Query("PricingRules").GetAsync<PricingRule>();
 
+
+            
         decimal total = 0;
 
         foreach (var item in items)
@@ -215,8 +217,10 @@ public class CheckoutController(IOptions<DatabaseSettings> databaseSettings, ILo
             {
                 var specialBundleCount = item.Quantity / rule.SpecialQuantity!.Value;
                 var remainingItems = item.Quantity % rule.SpecialQuantity.Value;
+                var product = await db.Query("Products").Where("Id", item.ProductId).FirstOrDefaultAsync();
+                if (product == null) throw new InvalidOperationException("Product does not exist.");
                 if (rule.SpecialPrice != null)
-                    total += specialBundleCount * rule.SpecialPrice.Value + remainingItems * rule.UnitPrice;
+                    total += specialBundleCount * rule.SpecialPrice.Value + remainingItems * product.UnitPrice;
             }
             else
             {

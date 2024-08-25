@@ -31,18 +31,19 @@
       | C2  | Carrot | 20       |
     And the following pricing rules:
       | Item | UnitPrice | SpecialQuantity | SpecialPrice |
-      | A2   | 50        | 3               | 130          |
-      | B2   | 30        | 2               | 45           |
-      | C2   | 20        |                 |              |
+      | A2   | 0        | 3               | 130          |
+      | B2   | 0        | 2               | 45           |
+      | C2   | 0        |                 |              |
     When I start a new checkout session
     And I scan the following items:
       | Item |
       | A2   |
       | A2   |
       | A2   |
+      | A2   |
       | B2   |
       | B2   |
-    Then the total price should be 175
+    Then the total price should be 225
     And I end the checkout session with payment details:
       | PaymentMethod | CardNumber | CardExpiry | CardCvc |
       | CreditCard    | 1234567890 | 12/23      | 123     |
